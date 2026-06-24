@@ -10,7 +10,9 @@ public class AppDbContext : DbContext
     {
     }
 
-    public DbSet<Patient> Patient => Set<Patient>();
+    public DbSet<Patient> Patients => Set<Patient>();
+    public DbSet<User> Users => Set<User>();
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

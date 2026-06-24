@@ -1,6 +1,6 @@
 using DotNetEnv;
 using VaccinationCard.Api.Extensions;
-using VaccinationCard.Application;
+//using VaccinationCard.Application;
 using VaccinationCard.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
