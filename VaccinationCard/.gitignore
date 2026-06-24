@@ -25,7 +25,8 @@ logs/
 packages/
 
 # Env
-.env
+.env*
+!.env-example
 
 # Coverage
 coverage/
