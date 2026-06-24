@@ -33,9 +33,7 @@ dotnet ef migrations add <MigrationName> \
 Exemplo:
 
 ```bash
-dotnet ef migrations add InitialCreate \
---project src/VaccinationCard.Infrastructure/VaccinationCard.Infrastructure.csproj \
---startup-project src/VaccinationCard.Api/VaccinationCard.Api.csproj
+dotnet ef migrations add InitialCreate --project src/VaccinationCard.Infrastructure/VaccinationCard.Infrastructure.csproj --startup-project src/VaccinationCard.Api/VaccinationCard.Api.csproj
 ```
 
 ---
@@ -43,9 +41,7 @@ dotnet ef migrations add InitialCreate \
 ## Aplicar migration no banco
 
 ```bash
-dotnet ef database update \
---project src/VaccinationCard.Infrastructure/VaccinationCard.Infrastructure.csproj \
---startup-project src/VaccinationCard.Api/VaccinationCard.Api.csproj
+dotnet ef database update --project src/VaccinationCard.Infrastructure/VaccinationCard.Infrastructure.csproj --startup-project src/VaccinationCard.Api/VaccinationCard.Api.csproj
 ```
 
 ---
