@@ -1,0 +1,41 @@
+# Build
+bin/
+obj/
+
+# Rider
+.idea/
+
+# VS
+.vs/
+
+# VSCode
+.vscode/
+
+# Test
+TestResults/
+
+# User
+*.user
+*.suo
+
+# Logs
+logs/
+
+# Packages
+packages/
+
+# Env
+.env
+
+# Coverage
+coverage/
+
+# EF
+Migrations/
+
+# Docker
+docker-data/
+
+# OS
+.DS_Store
+Thumbs.db
