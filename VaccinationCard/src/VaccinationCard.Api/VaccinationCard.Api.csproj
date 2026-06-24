@@ -13,4 +13,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\VaccinationCard.Application\VaccinationCard.Application.csproj" />
+    <ProjectReference Include="..\VaccinationCard.Infrastructure\VaccinationCard.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
