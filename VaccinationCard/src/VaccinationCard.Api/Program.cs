@@ -1,8 +1,11 @@
+using DotNetEnv;
+using VaccinationCard.Api.Extensions;
 using VaccinationCard.Application;
 using VaccinationCard.Infrastructure;
-using VaccinationCard.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Env.Load("../../.env");
 
 builder.Services.AddOpenApi();
 
@@ -10,7 +13,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 //builder.Services.AddApplication();
-//builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("Database")!);
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
