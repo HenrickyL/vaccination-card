@@ -8,10 +8,9 @@ public class Vaccine : BaseEntity
     public string Description { get; set; }
     public string Code { get; set; }
 
-
     private Vaccine() { } // EF Constructor
 
-    public Vaccine(string name, string code, string description) : base()
+    public Vaccine(string name, string code, string description) 
     {
         this.Name = name;
         this.Description = description;
