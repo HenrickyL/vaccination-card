@@ -35,7 +35,10 @@ public class VaccineRegisterRepository : IVaccineRegisterRepository
 
     public async Task<VaccineRegister?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        VaccineRegister? entity = await _dbSet.FirstOrDefaultAsync(x=>id == id, cancellationToken);
+        VaccineRegister? entity = await _dbSet
+            .Include(x => x.Vaccine)
+            .Include(x => x.Patient)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         return entity;
     }
 

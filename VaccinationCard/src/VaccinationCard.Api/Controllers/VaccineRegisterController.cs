@@ -5,6 +5,7 @@ using System.Security.Claims;
 using VaccinationCard.Application.UseCases.VaccinationRegisters.Create;
 using VaccinationCard.Application.UseCases.VaccinationRegisters.Delete;
 using VaccinationCard.Application.UseCases.VaccinationRegisters.List;
+using VaccinationCard.Application.UseCases.VaccinationRegisters.Update;
 
 namespace VaccinationCard.Api.Controllers;
 
@@ -41,7 +42,7 @@ public class VaccineRegisterController : ControllerBase
     /// <param name="patientId">Patient ID</param>
     /// <returns>Complete patient vaccination card with summary</returns>
     [HttpGet("patient/{patientId}")]
-    [Authorize(Roles = "Patient")]
+    [Authorize(Roles = "Employee,Patient")]
     [ProducesResponseType(typeof(PatientVaccinationCardResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -65,5 +66,25 @@ public class VaccineRegisterController : ControllerBase
     {
         await _mediator.Send(new DeleteVaccinationRecordCommand { Id = id });
         return NoContent();
+    }
+
+    /// <summary>
+    /// Update a vaccination record (Admin or Employee only)
+    /// </summary>
+    /// <param name="id">Vaccination record ID</param>
+    /// <param name="command">Updated data</param>
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Employee")]
+    [ProducesResponseType(typeof(UpdateVaccinationRecordResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateVaccinationRecordCommand command)
+    {
+        if (id != command.Id)
+            return BadRequest("ID mismatch");
+
+        var result = await _mediator.Send(command);
+        return Ok(result);
     }
 }

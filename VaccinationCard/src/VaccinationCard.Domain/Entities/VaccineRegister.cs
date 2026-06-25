@@ -17,7 +17,7 @@ public class VaccineRegister : BaseEntity
     public int Dose { get; set; }
     public string Lot { get; set; }
     public string Observations { get; set; }
-    public DateTime RegisteredAt { get; private set; }
+    public DateTime RegisteredAt { get; set; }
 
     // Navigation properties (N:1)
     public virtual Patient Patient { get; private set; }
