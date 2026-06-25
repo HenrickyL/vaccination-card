@@ -1,34 +1,37 @@
 using DotNetEnv;
 using VaccinationCard.Api.Extensions;
-//using VaccinationCard.Application;
 using VaccinationCard.Infrastructure;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace VaccinationCard.Api;
+public class Program{
+    public static void Main(string[] args) {
+        var builder = WebApplication.CreateBuilder(args);
 
-Env.Load("../../.env");
+        Env.Load("../../.env");
 
-builder.Services.AddOpenApi();
+        builder.Services.AddOpenApi();
+        // Services
+        builder.Services.AddControllers();
+        
+        // Infrastructure
+        builder.Services.AddInfrastructure(builder.Configuration);
 
-// Services
-builder.Services.AddControllers();
-builder.Services.AddOpenApi();
-//builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
+        var app = builder.Build();
 
-var app = builder.Build();
+        // Middleware
 
-// Middleware
-
-app.UseApiExceptions();
-app.UseHttpsRedirection();
+        app.UseApiExceptions();
+        app.UseHttpsRedirection();
 
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapOpenApi();
+        }
+
+        app.MapControllers();
+
+        app.Run();
+    }
 }
-
-app.MapControllers();
-
-app.Run();
