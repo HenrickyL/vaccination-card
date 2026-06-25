@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.OpenApi;
 using VaccinationCard.Api.Extensions;
 using VaccinationCard.Infrastructure;
+using VaccinationCard.Application;
+
 
 namespace VaccinationCard.Api;
 
@@ -20,6 +22,7 @@ public class Program
         builder.Services.AddJwtAuthentication(builder.Configuration);
         // Infrastructure
         builder.Services.AddInfrastructure(builder.Configuration);
+        builder.Services.AddApplication();
 
         SetupOpenApiWithSwagger(builder);
 

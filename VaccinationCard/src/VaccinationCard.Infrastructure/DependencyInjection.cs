@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using VaccinationCard.Domain.Interfaces;
 using VaccinationCard.Domain.Repositories;
 using VaccinationCard.Infrastructure.Persistence;
@@ -25,9 +22,6 @@ public static class DependencyInjection
 
         return services;
     }
-
-
-
 
     private static void InjectDatabase(IServiceCollection services)
     {
@@ -59,23 +53,5 @@ public static class DependencyInjection
     {
         services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
         services.AddScoped<IJwtService, JwtService>();
-    }
-    private static void InjectJwtAuthentication(IServiceCollection services, IConfiguration configuration)
-    {
-        var key = Encoding.ASCII.GetBytes(configuration["Jwt:Secret"] ?? "SuperSecretKey1234567890!@#$");
-
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
     }
 }
