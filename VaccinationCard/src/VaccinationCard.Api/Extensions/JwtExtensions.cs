@@ -1,6 +1,7 @@
-﻿using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
 
 namespace VaccinationCard.Api.Extensions;
 
@@ -10,38 +11,30 @@ public static class JwtExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        var secret = configuration["Jwt:Secret"]
+            ?? throw new InvalidOperationException("Jwt:Secret not configured");
 
-        var secret = configuration["Jwt:Secret"] ??
-                 Environment.GetEnvironmentVariable("JWT_SECRET") ??
-                 "SuperSecretKey1234567890!@#$";
+        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret));
 
-        var key = Encoding.ASCII.GetBytes(secret);
-
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    IssuerSigningKey = key,
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
+                    ClockSkew = TimeSpan.Zero,
+                    RoleClaimType = ClaimTypes.Role
                 };
+
             });
 
         services.AddAuthorization();
 
         return services;
-    }
-
-    public static IApplicationBuilder UseJwtAuthentication(
-        this IApplicationBuilder app)
-    {
-        app.UseAuthentication();
-        app.UseAuthorization();
-
-        return app;
     }
 }

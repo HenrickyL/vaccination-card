@@ -47,6 +47,7 @@ public static class DependencyInjection
     private static void InjectRepositories(IServiceCollection services) {
         services.AddScoped<IPatientRepository, PatientRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IVaccineRepository, VaccineRepository>();
     }
 
     private static void InjectSecurityServices(IServiceCollection services)
