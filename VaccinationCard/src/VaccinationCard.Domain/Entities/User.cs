@@ -20,7 +20,11 @@ public class User: BaseEntity
         Role = role;
         IsActive = true;
     }
-
+    public void LinkToPatient(Guid patientId)
+    {
+        PatientId = patientId;
+        UpdateTimestamp();
+    }
     public void Deactivate()
     {
         IsActive = false;
