@@ -5,7 +5,6 @@ using VaccinationCard.Api.Extensions;
 using VaccinationCard.Infrastructure;
 using VaccinationCard.Application;
 
-
 namespace VaccinationCard.Api;
 
 public class Program
