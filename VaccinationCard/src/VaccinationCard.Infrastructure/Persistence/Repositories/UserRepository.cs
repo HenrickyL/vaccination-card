@@ -26,6 +26,14 @@ public class UserRepository : IUserRepository
         return exists;
     }
 
+    public async Task<IEnumerable<User>> GetAllWithPatientAsync(CancellationToken cancellationToken = default)
+    {
+        var query = _dbSet.AsNoTracking()
+            .Include(x => x.Patient);
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
     public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
         User? user = await _dbSet.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower(), cancellationToken);
