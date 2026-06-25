@@ -32,7 +32,7 @@ public class VaccineRegisterConfiguration : BaseEntityConfiguration<VaccineRegis
         builder.Property(r => r.RegisteredAt)
             .IsRequired()
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
-            .HasColumnType("timestamp without time zone");
+            .HasColumnType("timestamp with time zone");
         // --- relations
         builder.HasOne(r => r.Patient)
             .WithMany(p => p.Registrations)

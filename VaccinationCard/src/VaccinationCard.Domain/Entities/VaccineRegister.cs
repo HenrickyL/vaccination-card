@@ -39,7 +39,7 @@ public class VaccineRegister : BaseEntity
         Dose = dose;
         Lot = lot;
         Observations = observations;
-        RegisteredAt = DateTime.UtcNow;
+        RegisteredAt = DateTime.Now;
     }
 
     public void Update(DateTime applicationDate, int dose, string lot, string observations)

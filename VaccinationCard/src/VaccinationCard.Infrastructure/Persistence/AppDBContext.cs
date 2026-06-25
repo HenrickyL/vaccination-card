@@ -15,6 +15,16 @@ public class AppDbContext : DbContext
     public DbSet<Vaccine> Vaccines => Set<Vaccine>();
     public DbSet<VaccineRegister> VaccineRegistrations => Set<VaccineRegister>();
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseNpgsql();
+        }
+
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
