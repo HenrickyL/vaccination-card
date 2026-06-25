@@ -4,8 +4,8 @@ namespace VaccinationCard.Domain.Entities;
 
 public class Patient :BaseEntity
 {
-    public string FullName { get; private set; }
-    public string IdentificationNumber { get; private set; }
+    public string FullName { get; set; }
+    public string IdentificationNumber { get; set; }
 
 
     private Patient() { } // EF

@@ -5,12 +5,12 @@ namespace VaccinationCard.Domain.Entities;
 
 public class User: BaseEntity
 {
-    public string Email { get; private set; }
-    public string PasswordHash { get; private set; }
-    public AccountStatus Status { get; private set; } = AccountStatus.Active;
-    public Guid? PatientId { get; private set; } // Ref Patient FK
-    public UserRole Role { get; private set; }
-    public bool IsActive { get; private set; } = true;
+    public string Email { get;  set; }
+    public string PasswordHash { get;  set; }
+    public AccountStatus Status { get;  set; } = AccountStatus.Active;
+    public Guid? PatientId { get;  set; } // Ref Patient FK
+    public UserRole Role { get;  set; }
+    public bool IsActive { get;  set; } = true;
 
     public User() {} // EF
     public User(string email, string passwordHash, UserRole role = UserRole.Patient) : base()
@@ -20,7 +20,11 @@ public class User: BaseEntity
         Role = role;
         IsActive = true;
     }
-
+    public void LinkToPatient(Guid patientId)
+    {
+        PatientId = patientId;
+        UpdateTimestamp();
+    }
     public void Deactivate()
     {
         IsActive = false;

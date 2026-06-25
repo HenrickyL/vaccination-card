@@ -1,8 +1,15 @@
-﻿using VaccinationCard.Domain.Exceptions;
+﻿using VaccinationCard.Domain.Enums;
+using VaccinationCard.Domain.Exceptions;
 
 namespace VaccinationCard.Api.Middlewares;
 
-public record ErrorResponse(int Status, object Message);
+public record ErrorResponse(
+    int Status,
+    string Code,
+    string Details,
+    string? Field = null
+);
+
 public class ExceptionMiddleware
 {
     private readonly RequestDelegate next;
@@ -20,33 +27,54 @@ public class ExceptionMiddleware
         {
             await next(context);
         }
+        catch (DomainException ex)
+        {
+            await HandleDomainAsync(context, ex, logger);
+        }
+        catch (FluentValidation.ValidationException fve) {
+
+            var response = new ErrorResponse(
+            Status: 400,
+            Code: ErrorCode.ValidationError.ToString(),
+            Details: string.Join("; ", fve.Errors.Select(e => e.ErrorMessage)),
+            Field: fve.Errors.FirstOrDefault()?.PropertyName
+            );
+
+            await context.Response.WriteAsJsonAsync(response);
+        }
         catch (Exception ex)
         {
-            await HandleAsync(context, ex, logger);
+            logger.LogError(ex, "Unhandled exception");
+            await context.Response.WriteAsJsonAsync(
+                new ErrorResponse(500, "InternalError", "Internal server error")
+            );
         }
     }
 
-    private static Task HandleAsync(HttpContext ctx, Exception ex, ILogger logger)
+    private static Task HandleDomainAsync(HttpContext ctx, DomainException ex, ILogger logger)
     {
-        // TODO: use DomainExceptions
-        var (statusCode, message) = ex switch
+        var statusCode = ex switch
         {
-            NotFoundException e => (404, e.Message),
-            BadRequestException e => (400, e.Message),
-            //ForbiddenException e => (403, e.Message),
-            //ValidationException e => (400, FormatValidation(e)),
-            _ => (500, "Internal server error")
+            NotFoundException => 404,
+            BadRequestException => 400,
+            ValidationException => 400,
+            ForbiddenException => 403,
+            _ => 500
         };
 
         if (statusCode == 500)
-            logger.LogError(ex, "Unhandled exception");
+            logger.LogError(ex, "Unhandled domain exception");
 
         ctx.Response.StatusCode = statusCode;
         ctx.Response.ContentType = "application/json";
 
-        return ctx.Response.WriteAsJsonAsync(new ErrorResponse(statusCode, message));
-    }
+        var response = new ErrorResponse(
+            Status: statusCode,
+            Code: ex.ErrorCode.ToString(),
+            Details: ex.Details,
+            Field: (ex is ValidationException ve) ? ve.Field : null
+        );
 
-    //private static string FormatValidation(ValidationException ex) =>
-    //    string.Join("; ", ex.Errors.Select(e => e.ErrorMessage));
+        return ctx.Response.WriteAsJsonAsync(response);
+    }
 }

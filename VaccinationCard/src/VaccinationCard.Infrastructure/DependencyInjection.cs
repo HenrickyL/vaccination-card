@@ -1,7 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using VaccinationCard.Domain.Interfaces;
+using VaccinationCard.Domain.Repositories;
 using VaccinationCard.Infrastructure.Persistence;
+using VaccinationCard.Infrastructure.Persistence.Repositories;
+using VaccinationCard.Infrastructure.Security;
 
 namespace VaccinationCard.Infrastructure;
 
@@ -11,14 +15,22 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        InjectDatabase(services);
+        InjectRepositories(services);
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        InjectSecurityServices(services);
+
+        return services;
+    }
+
+    private static void InjectDatabase(IServiceCollection services)
+    {
         var connectionString = BuildConnectionString();
 
         services.AddDbContext<AppDbContext>(options =>
         {
             options.UseNpgsql(connectionString);
         });
-
-        return services;
     }
 
     private static string BuildConnectionString()
@@ -30,5 +42,16 @@ public static class DependencyInjection
         var pass = Environment.GetEnvironmentVariable("DB_PASSWORD");
 
         return $"Host={host};Port={port};Database={db};Username={user};Password={pass}";
+    }
+    // -----
+    private static void InjectRepositories(IServiceCollection services) {
+        services.AddScoped<IPatientRepository, PatientRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+    }
+
+    private static void InjectSecurityServices(IServiceCollection services)
+    {
+        services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
+        services.AddScoped<IJwtService, JwtService>();
     }
 }
