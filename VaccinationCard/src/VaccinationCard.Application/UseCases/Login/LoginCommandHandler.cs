@@ -28,11 +28,11 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
         var user = await _userRepository.GetByEmailAsync(command.Email, cancellationToken);
 
         if (user == null)
-            throw new ValidationException("Email","Invalid credentials", ErrorCode.InvalidCredentials);
+            throw new BadRequestException("Invalid credentials", ErrorCode.InvalidCredentials);
 
         // 2. Verificar senha
         if (!_passwordHasher.Verify(user.PasswordHash, command.Password))
-            throw new ValidationException("Password", "Invalid credentials", ErrorCode.InvalidCredentials);
+            throw new BadRequestException("Invalid credentials", ErrorCode.InvalidCredentials);
 
         // 3. Verificar se usuário está ativo
         if (!user.IsActive)

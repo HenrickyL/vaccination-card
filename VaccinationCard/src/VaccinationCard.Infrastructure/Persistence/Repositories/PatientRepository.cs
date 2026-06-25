@@ -1,32 +1,47 @@
-﻿using VaccinationCard.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using VaccinationCard.Domain.Entities;
 using VaccinationCard.Domain.Repositories;
 
 namespace VaccinationCard.Infrastructure.Persistence.Repositories;
 
 public class PatientRepository : IPatientRepository
 {
+
+    private readonly AppDbContext _context;
+    private readonly DbSet<Patient> _dbSet;
+
+    public PatientRepository(AppDbContext context)
+    {
+        _context = context;
+        _dbSet = context.Set<Patient>();
+    }
+
     public void Add(Patient patient)
     {
-        throw new NotImplementedException();
+        _dbSet.Add(patient);
     }
 
-    public Task<bool> ExistsByIdentificationNumberAsync(string number, CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsByIdentificationNumberAsync(string number, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        bool exists = await _dbSet.AsNoTracking().AnyAsync(x => x.IdentificationNumber.ToLower() == number.ToLower(), cancellationToken);
+        return exists;
     }
 
-    public Task<Patient?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Patient?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        Patient? patient = await _dbSet.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        return patient;
     }
 
-    public Task<Patient?> GetByIdentificationNumberAsync(string number, CancellationToken cancellationToken = default)
+    public async Task<Patient?> GetByIdentificationNumberAsync(string number, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        Patient? patient = await _dbSet.FirstOrDefaultAsync(x => x.IdentificationNumber.ToLower() == number.ToLower(), cancellationToken);
+        return patient;
+
     }
 
     public void Update(Patient patient)
     {
-        throw new NotImplementedException();
+        _dbSet.Update(patient);
     }
 }

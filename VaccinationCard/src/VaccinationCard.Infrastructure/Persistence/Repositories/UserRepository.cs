@@ -1,27 +1,39 @@
-﻿using VaccinationCard.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using VaccinationCard.Domain.Entities;
 using VaccinationCard.Domain.Repositories;
 
 namespace VaccinationCard.Infrastructure.Persistence.Repositories;
 
 public class UserRepository : IUserRepository
 {
+
+    private readonly AppDbContext _context;
+    private readonly DbSet<User> _dbSet;
+
+    public UserRepository(AppDbContext context)
+    {
+        _context = context;
+        _dbSet = context.Set<User>();
+    }
     public void Add(User user)
     {
-        throw new NotImplementedException();
+        _dbSet.Add(user);
     }
 
-    public Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        bool exists = await _dbSet.AsNoTracking().AnyAsync(x =>x.Email.ToLower()==email.ToLower(), cancellationToken);
+        return exists;
     }
 
-    public Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        User? user = await _dbSet.FirstOrDefaultAsync(x => x.Email.ToLower() == email.ToLower(), cancellationToken);
+        return user;
     }
 
     public void Update(User user)
     {
-        throw new NotImplementedException();
+        _dbSet.Update(user);
     }
 }
