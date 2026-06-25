@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VaccinationCard.Application.UseCases.Vaccines.Create;
+using VaccinationCard.Application.UseCases.Vaccines.Lis;
+using VaccinationCard.Application.UseCases.Vaccines.List;
 
 namespace VaccinationCard.Api.Controllers
 {
@@ -18,7 +20,7 @@ namespace VaccinationCard.Api.Controllers
         }
 
         /// <summary>
-        /// Create a new vaccine (Admin only)
+        /// Create a new vaccine
         /// </summary>
         [HttpPost]
         [Authorize(Roles = "Employee")]
@@ -29,6 +31,20 @@ namespace VaccinationCard.Api.Controllers
         {
             var result = await _mediator.Send(command);
             return Created(string.Empty, result);
+        }
+
+
+        /// <summary>
+        /// list all vaccine
+        /// </summary>
+        [HttpGet]
+        [ProducesResponseType(typeof(ListVaccinesResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ListAll()
+        {
+            ///TODO: Add pagination
+            var result = await _mediator.Send(new ListVaccinesCommand());
+            return Ok(result);
         }
 
     }
