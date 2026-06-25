@@ -12,8 +12,8 @@ using VaccinationCard.Infrastructure.Persistence;
 namespace VaccinationCard.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260625062443_AddVaccine")]
-    partial class AddVaccine
+    [Migration("20260625082104_InitialSetup")]
+    partial class InitialSetup
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -101,15 +101,17 @@ namespace VaccinationCard.Infrastructure.Migrations
                     b.Property<Guid?>("PatientId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("Role")
+                    b.Property<string>("Role")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
+                        .HasColumnType("text")
+                        .HasDefaultValue("Patient");
 
-                    b.Property<int>("Status")
+                    b.Property<string>("Status")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
+                        .HasColumnType("text")
+                        .HasDefaultValue("Active");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");

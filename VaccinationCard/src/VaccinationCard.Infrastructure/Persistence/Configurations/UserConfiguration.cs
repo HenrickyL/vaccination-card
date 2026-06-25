@@ -23,7 +23,7 @@ public  class UserConfiguration : BaseEntityConfiguration<User>
             .IsRequired();
 
         builder.Property(u => u.Status)
-            .HasConversion<int>()
+            .HasConversion<string>()
             .IsRequired()
             .HasDefaultValue(AccountStatus.Active);
 
@@ -32,7 +32,7 @@ public  class UserConfiguration : BaseEntityConfiguration<User>
 
     
         builder.Property(u => u.Role)
-            .HasConversion<int>()
+            .HasConversion<string>()
             .IsRequired()
             .HasDefaultValue(UserRole.Patient);
 

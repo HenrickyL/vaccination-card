@@ -31,9 +31,9 @@ public class VaccineRepository : IVaccineRepository
         return exists;
     }
 
-    public async Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsByCodeAsync(string code, CancellationToken cancellationToken = default)
     {
-        bool exists = await _dbSet.AsNoTracking().AnyAsync(x=>x.Name.ToLower() == name.ToLower(), cancellationToken);
+        bool exists = await _dbSet.AsNoTracking().AnyAsync(x=>x.Code.ToLower() == code.ToLower(), cancellationToken);
         return exists;
     }
 
