@@ -13,7 +13,7 @@ public class AppDbContext : DbContext
     public DbSet<Patient> Patients => Set<Patient>();
     public DbSet<User> Users => Set<User>();
     public DbSet<Vaccine> Vaccines => Set<Vaccine>();
-
+    public DbSet<VaccineRegister> VaccineRegistrations => Set<VaccineRegister>();
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

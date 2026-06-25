@@ -15,4 +15,6 @@ public class Patient :BaseEntity
         this.FullName = name;
         this.IdentificationNumber = identificationNumber;
     }
+
+    public virtual ICollection<VaccineRegister> Registrations { get; private set; }
 }
