@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using VaccinationCard.Domain.Enums;
 
 namespace VaccinationCard.Application.UseCases.Auth;
 
@@ -26,5 +27,9 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
 
         RuleFor(x => x.ConfirmPassword)
             .Equal(x => x.Password).WithMessage("Passwords do not match");
+
+        RuleFor(x => x.Role)
+            .Must(role => role == UserRole.Patient.ToString() || role == UserRole.Employee.ToString())
+            .WithMessage("Invalid role. Options: Patient or Employee");
     }
 }
