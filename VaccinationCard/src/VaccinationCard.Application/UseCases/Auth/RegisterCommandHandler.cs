@@ -28,7 +28,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterR
         _jwtService = jwtService;
         _unitOfWork = unitOfWork;
     }
-
+    /// TODO: Use Seed to create Admin and validate token to register a EEmployee.
     public async Task<RegisterResponse> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
         // 1. Validar se email já existe
@@ -51,7 +51,8 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterR
 
         // 4. Criar usuário
         var passwordHash = _passwordHasher.Hash(command.Password);
-        var user = new User(command.Email, passwordHash, UserRole.Patient);
+        UserRole userRole = Enum.Parse<UserRole>(command.Role, ignoreCase: true);
+        var user = new User(command.Email, passwordHash, userRole);
         user.LinkToPatient(patient.Id);
         //patient.LinkToUser(user.Id);
 

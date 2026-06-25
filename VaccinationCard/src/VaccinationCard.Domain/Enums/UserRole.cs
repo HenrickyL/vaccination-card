@@ -1,7 +1,7 @@
 ﻿namespace VaccinationCard.Domain.Enums;
 
 public enum UserRole{
-    Patient,
+    Admin,
     Employee,
-    Admin
+    Patient,
 }
