@@ -52,6 +52,7 @@ public class VaccineRegisterRepository : IVaccineRegisterRepository
     public async Task<IEnumerable<VaccineRegister>> GetByPatientIdAsync(Guid patientId, CancellationToken cancellationToken = default)
     {
         var query =  _dbSet
+            .Include(x=>x.Vaccine)
             .Where(r => r.PatientId == patientId);
 
         return await query.ToListAsync(cancellationToken);

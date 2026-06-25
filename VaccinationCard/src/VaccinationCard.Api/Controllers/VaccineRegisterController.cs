@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using VaccinationCard.Application.UseCases.VaccinationRegisters.Create;
+using VaccinationCard.Application.UseCases.VaccinationRegisters.List;
 
 namespace VaccinationCard.Api.Controllers;
 
@@ -30,5 +32,22 @@ public class VaccineRegisterController : ControllerBase
     {
         var result = await _mediator.Send(command);
         return Created(string.Empty, result);
+    }
+
+    /// <summary>
+    /// Get vaccination card for a specific patient (Admin/Employee only)
+    /// </summary>
+    /// <param name="patientId">Patient ID</param>
+    /// <returns>Complete patient vaccination card with summary</returns>
+    [HttpGet("patient/{patientId}")]
+    [Authorize(Roles = "Patient")]
+    [ProducesResponseType(typeof(PatientVaccinationCardResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetByPatient(Guid patientId)
+    {
+        var query = new PatientVaccinationCardCommand { PatientId = patientId };
+        var result = await _mediator.Send(query);
+        return Ok(result);
     }
 }
