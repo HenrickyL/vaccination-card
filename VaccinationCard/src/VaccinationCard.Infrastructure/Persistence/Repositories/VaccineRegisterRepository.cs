@@ -43,7 +43,7 @@ public class VaccineRegisterRepository : IVaccineRegisterRepository
     {
         var response = await _dbSet
             .Include(r => r.Vaccine)
-            .Where(r => r.PatientId == patientId)
+            .Where(r => r.PatientId == patientId && !r.IsDeleted)
             .OrderByDescending(r => r.ApplicationDate)
             .ToListAsync(cancellationToken);
         return response;
