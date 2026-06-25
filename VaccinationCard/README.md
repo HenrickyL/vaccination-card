@@ -11,56 +11,67 @@ Objetivo do projeto:
 ---
 
 # Comandos principais
-
-## Subir Postgres (Docker)
-
-```bash
-docker-compose up --build
-```
-
+ 
 ---
-
-## Gerar migration
-
+ 
+## Development
+ 
+Fluxo para desenvolvimento local com Visual Studio — o Docker sobe apenas o Postgres, e a API roda pela IDE.
+ 
+### 1. Subir o Postgres
+ 
+```bash
+docker-compose up
+```
+ 
+### 2. Gerar migration
+ 
 Executar na raiz do projeto:
-
+ 
 ```bash
-dotnet ef migrations add <MigrationName> \
---project src/VaccinationCard.Infrastructure/VaccinationCard.Infrastructure.csproj \
---startup-project src/VaccinationCard.Api/VaccinationCard.Api.csproj
+dotnet ef migrations add <NomeDaMigration>  --project src/VaccinationCard.Infrastructure/VaccinationCard.Infrastructure.csproj --startup-project src/VaccinationCard.Api/VaccinationCard.Api.csproj
 ```
-
+ 
 Exemplo:
-
+ 
 ```bash
-dotnet ef migrations add InitialCreate --project src/VaccinationCard.Infrastructure/VaccinationCard.Infrastructure.csproj --startup-project src/VaccinationCard.Api/VaccinationCard.Api.csproj
+dotnet ef migrations add InitialCreate \
+  --project src/VaccinationCard.Infrastructure/VaccinationCard.Infrastructure.csproj \
+  --startup-project src/VaccinationCard.Api/VaccinationCard.Api.csproj
 ```
-
----
-
-## Aplicar migration no banco
-
+ 
+### 3. Aplicar migration no banco
+ 
 ```bash
 dotnet ef database update --project src/VaccinationCard.Infrastructure/VaccinationCard.Infrastructure.csproj --startup-project src/VaccinationCard.Api/VaccinationCard.Api.csproj
 ```
-
----
-
-## Rodar API
-
+ 
+### 4. Rodar a API
+ 
 ```bash
 dotnet run --project src/VaccinationCard.Api
 ```
-
+ 
+Ou pelo próprio Visual Studio (F5 / botão de run).
+ 
 ---
-
-## Abrir documentação
-
-OpenAPI:
-
-```text
-http://localhost:8080/openapi
+ 
+## Release
+ 
+Fluxo para quem quer apenas testar a API — sobe Postgres e API juntos, sem precisar do .NET instalado.
+ 
+### 1. Subir tudo
+ 
+```bash
+docker-compose --profile release up --build
 ```
+ 
+### 2. Acessar a API
+ 
+| | URL |
+|---|---|
+| API | http://localhost:8080 |
+| Swagger | http://localhost:8080/swagger |
 
 ---
 
@@ -69,7 +80,7 @@ http://localhost:8080/openapi
 Criar arquivo `.env` na raiz do projeto:
 
 ```env
-DB_HOST=localhost
+DB_HOST=postgres
 DB_PORT=5432
 DB_NAME=vaccination_card
 DB_USER=postgres
@@ -77,6 +88,8 @@ DB_PASSWORD=postgres123
 
 ASPNETCORE_ENVIRONMENT=Development
 ASPNETCORE_URLS=http://+:8080
+
+JWT_SECRET=SuperSecretKey1234567890!@#$%^&*()
 ```
 
 ---

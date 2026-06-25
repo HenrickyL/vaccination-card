@@ -16,18 +16,23 @@ services:
       timeout: 5s
       retries: 5
 
-  # api:
-  #   build:
-  #     context: .
-  #     dockerfile: src/VaccinationCard.API/Dockerfile
-  #   container_name: vaccination_api
-  #   env_file:
-  #     - .env
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
+  api:
+    profiles: ["release"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vaccination_api
+    env_file:
+      - .env
+    environment:
+      DB_HOST: postgres
+      ConnectionStrings__DefaultConnection: >-
+        Host=postgres;Port=${DB_PORT};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:
