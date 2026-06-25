@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VaccinationCard.Application.UseCases.Auth;
+using VaccinationCard.Application.UseCases.Login;
 
 namespace VaccinationCard.Api.Controllers;
 
@@ -29,5 +30,19 @@ public class AuthController : ControllerBase
     {
         var result = await _mediator.Send(command);
         return CreatedAtAction(nameof(Register), new { id = result.UserId }, result);
+    }
+
+    /// <summary>
+    /// Login to the system
+    /// </summary>
+    /// <param name="command">Login credentials</param>
+    /// <returns>User data with JWT token</returns>
+    [HttpPost("login")]
+    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Login([FromBody] LoginCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return Ok(result);
     }
 }
