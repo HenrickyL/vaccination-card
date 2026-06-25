@@ -1,9 +1,8 @@
 using DotNetEnv;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.OpenApi;
 using VaccinationCard.Api.Extensions;
-using VaccinationCard.Infrastructure;
 using VaccinationCard.Application;
+using VaccinationCard.Infrastructure;
+using VaccinationCard.Api.Transformers;
 
 namespace VaccinationCard.Api;
 
@@ -15,6 +14,10 @@ public class Program
 
         Env.Load("../../.env");
 
+        builder.Services.AddOpenApi("v1", options =>
+        {
+            options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+        });
         // Services
         builder.Services.AddControllers();
         // JWT Authentication
@@ -23,83 +26,30 @@ public class Program
         builder.Services.AddInfrastructure(builder.Configuration);
         builder.Services.AddApplication();
 
-        SetupOpenApiWithSwagger(builder);
-
         var app = builder.Build();
 
         // Middleware
         app.UseApiExceptions();
         app.UseHttpsRedirection();
-        // JWT Middleware
-        app.UseJwtAuthentication();
+        app.UseRouting();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
 
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
-
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/openapi/v1.json", "API v1");
+                options.SwaggerEndpoint("/openapi/v1.json", "VaccinationCard API v1");
+                options.RoutePrefix = "swagger";
             });
         }
 
         app.MapControllers();
 
         app.Run();
-    }
-
-    private static void SetupOpenApiWithSwagger(WebApplicationBuilder builder) {
-        builder.Services.AddOpenApi(options =>
-        {
-            options.AddDocumentTransformer(
-                async (
-                    document,
-                    context,
-                    cancellationToken
-                ) =>
-                {
-                    var authProvider =
-                        context.ApplicationServices
-                            .GetRequiredService<IAuthenticationSchemeProvider>();
-
-                    var schemes =
-                        await authProvider
-                            .GetAllSchemesAsync();
-
-                    if (
-                        schemes.Any(
-                            x => x.Name == "Bearer"
-                        )
-                    )
-                    {
-                        document.Components ??=
-                            new();
-
-                        document.Components.SecuritySchemes =
-                            new Dictionary<
-                                string,
-                                IOpenApiSecurityScheme>
-                            {
-                                ["Bearer"] =
-                                    new OpenApiSecurityScheme
-                                    {
-                                        Type =
-                                            SecuritySchemeType.Http,
-
-                                        Scheme =
-                                            "bearer",
-
-                                        In =
-                                            ParameterLocation.Header,
-
-                                        BearerFormat =
-                                            "JWT"
-                                    }
-                            };
-                    }
-                });
-        });
     }
 }

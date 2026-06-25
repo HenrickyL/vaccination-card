@@ -19,7 +19,11 @@ public class JwtService : IJwtService
 
     public string GenerateToken(Guid userId, string email, UserRole role)
     {
-        var key = Encoding.ASCII.GetBytes(_config["Jwt:Secret"]!);
+
+        var secret = _config["Jwt:Secret"]
+            ?? Environment.GetEnvironmentVariable("JWT_SECRET")
+            ?? throw new InvalidOperationException("JWT Secret not configured");
+        var key = Encoding.ASCII.GetBytes(secret);
 
         var claims = new List<Claim>
             {
@@ -31,7 +35,7 @@ public class JwtService : IJwtService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddHours(8),
+            Expires = DateTime.UtcNow.AddHours(3),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)
