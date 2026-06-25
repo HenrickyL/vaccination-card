@@ -7,6 +7,8 @@ public class Vaccine : BaseEntity
     public string Name { get; set; }
     public string Description { get; set; }
     public string Code { get; set; }
+    //Navigation
+    public virtual ICollection<VaccineRegister> Registrations { get; private set; }
 
     private Vaccine() { } // EF Constructor
 

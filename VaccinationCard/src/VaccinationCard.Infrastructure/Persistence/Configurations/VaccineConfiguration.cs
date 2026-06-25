@@ -26,5 +26,6 @@ public class VaccineConfiguration : BaseEntityConfiguration<Vaccine>
         builder.HasIndex(u => u.Code)
             .IsUnique();
 
+        builder.HasIndex(v => v.Code);
     }
 }

@@ -8,7 +8,7 @@ public class CreateVaccineCommandValidator: AbstractValidator<CreateVaccineComma
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Vaccine name is required")
-            .MinimumLength(4).WithMessage("\"Vaccine name must be at least 4 characters long")
+            .MinimumLength(3).WithMessage("\"Vaccine name must be at least 3 characters long")
             .MaximumLength(63).WithMessage("Vaccine name must not exceed 64 characters");
 
         RuleFor(x => x.Description)
